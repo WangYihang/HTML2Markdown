@@ -9,10 +9,16 @@ def getScriptFileName():
     return sys.argv[0].split("/")[-1]
 
 
+def isUrl(fileName):
+    return ("/" in fileName)
+
+
 def showHelp():
+    scriptFileName = getScriptFileName()
     print "Usage : "
-    print "\tpython " + getScriptFileName() + " input.html output.html"
-    print "\tpython " + getScriptFileName() + " \"http://www.wangyihang.net/index.html\" output.html"
+    print "\tpython " + scriptFileName + " input.html output.html"
+    print "\tpython " + scriptFileName,
+    print " \"http://www.wangyihang.net/index.html\" output.html"
 
 
 def checkInput():
@@ -23,8 +29,44 @@ def checkInput():
         return (sys.argv[1], sys.argv[2])
 
 
+def createFileNameByUrl(url):
+    if url.endswith("/"):
+        return "index.html"
+    else:
+        return url.split("/")[-1]
+
+
+def downloadFile(url):
+    response = requests.get(url)
+    fileName = createFileNameByUrl(url)
+    with open(fileName, "w") as file:
+        file.write(response.content)
+    return fileName
+
+
+def convert(content):
+    return ""
+
+
+def writeFile(fileName, content):
+    file = open(fileName, "w")
+    file.write(content)
+    file.close()
+
+
+def getContentOfFile(fileName):
+    return open(fileName).read()
+
+
 def main():
-    print checkInput()
+    (inputFile, outputFile) = checkInput()
+    fileName = ""
+    if inputFile.isUrl():
+        fileName = downloadFile(inputFile)
+    else:
+        fileName = inputFile
+    content = getContentOfFile(fileName)
+    print content
 
 
 if __name__ == '__main__':
