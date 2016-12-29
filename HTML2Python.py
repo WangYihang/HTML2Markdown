@@ -45,7 +45,8 @@ def downloadFile(url):
 
 
 def convert(content):
-    return ""
+    markdown = ""
+    return markdown
 
 
 def writeFile(fileName, content):
@@ -58,15 +59,28 @@ def getContentOfFile(fileName):
     return open(fileName).read()
 
 
+def getRealFileName(fileName):
+    temp = fileName.split(".")[0:-1]
+    result = ""
+    for segment in temp:
+        result += segment
+    return result
+
+
+def getMarkdownFileName(realFileName):
+    return realFileName + ".md"
+
+
 def main():
     (inputFile, outputFile) = checkInput()
     fileName = ""
-    if inputFile.isUrl():
+    if isUrl(inputFile):
         fileName = downloadFile(inputFile)
     else:
         fileName = inputFile
     content = getContentOfFile(fileName)
-    print content
+    markdownContent = convert(content)
+    writeFile(getMarkdownFileName(getRealFileName(fileName)), markdownContent)
 
 
 if __name__ == '__main__':
